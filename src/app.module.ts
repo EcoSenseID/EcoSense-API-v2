@@ -7,6 +7,7 @@ import { NewsModule } from './news/news.module';
 import { RewardsModule } from './rewards/rewards.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FirebaseStrategy } from './auth/strategy';
+import { RewardCategoriesModule } from './reward-categories/reward-categories.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { FirebaseStrategy } from './auth/strategy';
     NewsModule,
     RewardsModule,
     CategoriesModule,
+    RewardCategoriesModule,
   ],
   controllers: [AppController],
   providers: [FirebaseStrategy],

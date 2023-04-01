@@ -15,6 +15,7 @@ async function bootstrap() {
     .setVersion('2.0')
     .setContact('EcoSense Indonesia', 'https://ecosense.id', 'hey@ecosense.id')
     .addBearerAuth()
+    .addServer('http://localhost:3333')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, options);
