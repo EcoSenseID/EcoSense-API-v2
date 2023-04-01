@@ -6,6 +6,7 @@ import { CampaignsModule } from './campaigns/campaigns.module';
 import { NewsModule } from './news/news.module';
 import { RewardsModule } from './rewards/rewards.module';
 import { CategoriesModule } from './categories/categories.module';
+import { FirebaseStrategy } from './auth/strategy';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { CategoriesModule } from './categories/categories.module';
     CategoriesModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [FirebaseStrategy],
 })
 export class AppModule {}

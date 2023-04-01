@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { CampaignsService } from './campaigns.service';
 import {
@@ -16,6 +17,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
+import { FirebaseGuard, RolesGuard } from 'src/auth/guard';
+import { Roles } from 'src/auth/decorator';
+import { Role } from 'src/auth/role.enum';
 
 @ApiTags('Campaigns')
 @Controller('campaigns')
@@ -48,6 +52,8 @@ export class CampaignsController {
   }
 
   @Post('')
+  @Roles(Role.Admin)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new campaign' })
   create(@Body() dto: CreateCampaignDto) {
@@ -55,6 +61,8 @@ export class CampaignsController {
   }
 
   @Put(':id')
+  @Roles(Role.Admin)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a campaign' })
   update(@Param('id') id: string) {
@@ -62,6 +70,8 @@ export class CampaignsController {
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a campaign' })
   delete(@Param('id') id: string) {
