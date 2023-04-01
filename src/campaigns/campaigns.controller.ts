@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -14,6 +15,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { CreateCampaignDto } from './dto/create-campaign.dto';
 
 @ApiTags('Campaigns')
 @Controller('campaigns')
@@ -48,8 +50,8 @@ export class CampaignsController {
   @Post('')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new campaign' })
-  create() {
-    return 'This action adds a new campaign';
+  create(@Body() dto: CreateCampaignDto) {
+    return this.campaignsService.createCampaign(0, dto);
   }
 
   @Put(':id')

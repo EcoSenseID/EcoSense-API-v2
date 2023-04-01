@@ -7,6 +7,7 @@ import {
 } from 'src/helpers';
 
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateCampaignDto } from './dto/create-campaign.dto';
 
 @Injectable()
 export class CampaignsService {
@@ -130,5 +131,21 @@ export class CampaignsService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  async createCampaign(userId: number, dto: CreateCampaignDto) {
+    // Send image to Google Cloud Storage
+    const posterUrl = '';
+
+    // Create campaign in database
+    return this.prisma.campaign.create({
+      data: {
+        ...dto,
+        start_date: dto.startDate,
+        end_date: dto.endDate,
+        poster_url: posterUrl,
+        id_initiator: userId,
+      },
+    });
   }
 }
