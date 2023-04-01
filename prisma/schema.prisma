@@ -1,0 +1,328 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Campaign {
+  id                Int                 @id @default(autoincrement())
+  title             String              @db.VarChar(128)
+  description       String              @db.VarChar(4096)
+  start_date        DateTime            @db.Timestamptz(6)
+  end_date          DateTime            @db.Timestamptz(6)
+  poster_url        String              @db.VarChar(1024)
+  id_initiator      Int
+  id_category       Int?
+  ecopoints         Int?
+  terms_conditions  String?             @db.VarChar(2048)
+  reset_every       Int                 @default(1)
+  created_at        DateTime?           @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?           @default(now()) @db.Timestamptz(6)
+  deleted_at        DateTime?           @db.Timestamptz(6)
+  donation          String?             @db.VarChar(128)
+  category          Category?           @relation(fields: [id_category], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users             User                @relation(fields: [id_initiator], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  category_campaign CategoryCampaign[]  @ignore
+  join_records      JoinRecord[]
+  missions          Mission[]
+  stories           Story[]
+
+  @@map("campaigns")
+}
+
+model Category {
+  id        Int         @id @default(autoincrement())
+  name      String      @db.VarChar(100)
+  photo_url String      @db.VarChar(2083)
+  color_hex String?     @db.VarChar(7)
+  campaigns Campaign[]
+
+  @@map("categories")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model CategoryCampaign {
+  id_category             Int
+  id_campaign             Int
+  earned_experience_point Int
+  campaigns               Campaign  @relation(fields: [id_campaign], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("category_campaign")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model CategoryReward {
+  id_category       Int
+  id_reward         Int
+  reward_category   RewardCategory    @relation(fields: [id_category], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reward            Reward            @relation(fields: [id_reward], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "category_rewards_id_rewards_fkey")
+
+  @@map("category_rewards")
+  @@ignore
+}
+
+model CompletedMission {
+  id_mission     Int
+  id_user        Int
+  photo_url      String       @db.VarChar(2083)
+  timestamp      DateTime     @db.Timestamptz(6)
+  caption        String?      @db.VarChar(500)
+  status         Int          @default(2)
+  id             Int          @id @default(autoincrement())
+  invalid_reason String       @default("") @db.VarChar(255)
+  id_record      Int
+  created_at     DateTime?    @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime?    @default(now()) @db.Timestamptz(6)
+  deleted_at     DateTime?    @db.Timestamptz(6)
+  photo_hash     String?      @db.VarChar(255)
+  join_records   JoinRecord   @relation(fields: [id_record], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  missions       Mission     @relation(fields: [id_mission], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "completed_tasks_id_task_fkey")
+  users          User         @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "completed_tasks_id_user_fkey")
+
+  @@map("completed_missions")
+}
+
+model History {
+  id                 Int      @id @default(autoincrement())
+  id_user            Int
+  label              String   @db.VarChar(100)
+  timestamp          DateTime @db.Timestamptz(6)
+  confidence_percent Int
+  users              User     @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("histories")
+}
+
+model JoinRecord {
+  id_campaign         Int
+  id_user             Int
+  is_completed        Boolean              @default(false)
+  joined_timestamp    DateTime             @db.Timestamptz(6)
+  completed_timestamp DateTime             @db.Timestamptz(6)
+  status              Int                  @default(1)
+  id                  Int                  @id(map: "campaign_participant_pkey") @default(autoincrement())
+  earned_ecopoints    Int                  @default(0)
+  created_at          DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?            @default(now()) @db.Timestamptz(6)
+  deleted_at          DateTime?            @db.Timestamptz(6)
+  completed_missions  CompletedMission[]
+  campaign            Campaign             @relation(fields: [id_campaign], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "campaign_participant_id_campaign_fkey")
+
+  @@map("join_records")
+}
+
+model Mission {
+  id                 Int                  @id(map: "tasks_pkey") @default(autoincrement())
+  id_campaign        Int
+  order_number       Int
+  name               String               @db.VarChar(1024)
+  require_proof      Boolean
+  completed_missions CompletedMission[]
+  campaign           Campaign             @relation(fields: [id_campaign], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tasks_id_campaign_fkey")
+
+  @@map("missions")
+}
+
+model News {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  description String    @db.VarChar(2083)
+  news_url    String    @db.VarChar(2083)
+  photo_url   String    @db.VarChar(2083)
+  date        DateTime  @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  deleted_at  DateTime? @db.Timestamptz(6)
+
+  @@map("news")
+}
+
+model Notification {
+  id                                        Int       @id @default(autoincrement())
+  id_target_user                            Int
+  id_sender_user                            Int?
+  type                                      String    @db.VarChar(50)
+  timestamp                                 DateTime  @db.Timestamptz(6)
+  object                                    String    @db.VarChar(50)
+  object_id                                 Int
+  created_at                                DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at                                DateTime? @default(now()) @db.Timestamptz(6)
+  deleted_at                                DateTime? @db.Timestamptz(6)
+  users_notifications_id_sender_userTousers User?     @relation("notifications_id_sender_userTousers", fields: [id_sender_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_notifications_id_sender_user")
+  users_notifications_id_target_userTousers User      @relation("notifications_id_target_userTousers", fields: [id_target_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_notifications_id_target_user")
+
+  @@map("notifications")
+}
+
+model Reply {
+  id               Int                @id(map: "comments_pkey") @default(autoincrement())
+  id_user          Int
+  id_story         Int
+  description      String             @db.VarChar(2000)
+  photo_url        String             @db.VarChar(2083)
+  timestamp        DateTime           @db.Timestamptz(6)
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  deleted_at       DateTime?          @db.Timestamptz(6)
+  story            Story              @relation(fields: [id_story], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comments_id_story_fkey")
+  user             User               @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comments_id_user_fkey")
+  supports         ReplySupport[]
+
+  @@map("replies")
+}
+
+model ReplySupport {
+  id         Int       @id @default(autoincrement())
+  id_user    Int
+  id_reply   Int
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  reply      Reply     @relation(fields: [id_reply], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user       User      @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("replies_supports")
+}
+
+model RewardCategory {
+  id               Int                @id(map: "categories_for_rewards_pkey") @default(autoincrement())
+  name             String?            @db.VarChar(100)
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  deleted_at       DateTime?          @db.Timestamptz(6)
+  category_reward  CategoryReward[]  @ignore
+  rewards          Reward[]
+
+  @@map("reward_categories")
+}
+
+model RewardClaim {
+  id_reward     Int
+  id_user       Int
+  status        Int
+  timestamp     DateTime  @db.Timestamptz(6)
+  id            Int       @id @default(autoincrement())
+  email         String    @db.VarChar(50)
+  wallet_type   String    @db.VarChar(10)
+  wallet_number String?   @db.VarChar(20)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
+  deleted_at    DateTime? @db.Timestamptz(6)
+  reward        Reward    @relation(fields: [id_reward], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "claimed_rewards_id_rewards_fkey")
+  users         User      @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "claimed_rewards_id_user_fkey")
+
+  @@map("reward_claims")
+}
+
+model Reward {
+  id                   Int                @id @default(autoincrement())
+  photo_url            String             @db.VarChar(2083)
+  ecopoints            Int
+  valid_until          DateTime           @db.Timestamptz(6)
+  description          String             @db.VarChar(2000)
+  terms_and_conditions String             @db.VarChar(4096)
+  id_category          Int
+  how_to_use           String             @db.VarChar(4096)
+  title                String             @db.VarChar(200)
+  partner              String             @db.VarChar(100)
+  max_redeem           Int
+  created_at           DateTime?          @default(now()) @db.Timestamptz(6)
+  deleted_at           DateTime?          @db.Timestamptz(6)
+  updated_at           DateTime?          @default(now()) @db.Timestamptz(6)
+  category_reward      CategoryReward[]   @ignore
+  claims               RewardClaim[]
+  category             RewardCategory     @relation(fields: [id_category], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("rewards")
+}
+
+model Role {
+  id          Int         @id(map: "role_pkey") @default(autoincrement())
+  name        String      @db.VarChar(100)
+  description String      @db.VarChar(255)
+  user_role   UserRole[]  @ignore
+
+  @@map("roles")
+  @@ignore
+}
+
+model Story {
+  id               Int                @id @default(autoincrement())
+  id_user          Int
+  description      String             @db.VarChar(3000)
+  timestamp        DateTime           @db.Timestamptz(6)
+  photo_url        String             @db.VarChar(2083)
+  id_campaign      Int?
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  deleted_at       DateTime?          @db.Timestamptz(6)
+  replies          Reply[]
+  campaign         Campaign?          @relation(fields: [id_campaign], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users            User               @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  supports         StorySupport[]
+
+  @@map("stories")
+}
+
+model StorySupport {
+  id         Int       @id(map: "stories_likes_pkey") @default(autoincrement())
+  id_user    Int
+  id_story   Int
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  story      Story     @relation(fields: [id_story], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "stories_likes_id_story_fkey")
+  user       User      @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "stories_likes_id_user_fkey")
+
+  @@map("stories_supports")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model UserExperiencePoint {
+  id_category      Int
+  id_user          Int
+  experience_point Int
+
+  @@map("user_experience_points")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model UserRole {
+  id_user Int
+  id_role Int
+  role    Role  @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user    User  @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("user_role")
+  @@ignore
+}
+
+model User {
+  id                                                Int                  @id @default(autoincrement())
+  firebase_uid                                      String               @db.VarChar(40)
+  name                                              String?              @db.VarChar
+  profile_url                                       String?              @db.VarChar(2083)
+  ecopoints                                         Int                  @default(0)
+  registration_token                                String?              @db.VarChar(255)
+  created_at                                        DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at                                        DateTime?            @default(now()) @db.Timestamptz(6)
+  deleted_at                                        DateTime?            @db.Timestamptz(6)
+  campaigns                                         Campaign[]
+  completed_missions                                CompletedMission[]
+  histories                                         History[]
+  notifications_notifications_id_sender_userTousers Notification[]       @relation("notifications_id_sender_userTousers")
+  notifications_notifications_id_target_userTousers Notification[]       @relation("notifications_id_target_userTousers")
+  replies                                           Reply[]
+  reply_supports                                    ReplySupport[]
+  reward_claims                                     RewardClaim[]
+  stories                                           Story[]
+  story_supports                                    StorySupport[]
+  user_role                                         UserRole[]          @ignore
+
+  @@map("users")
+}
