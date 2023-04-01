@@ -12,7 +12,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class CampaignsService {
   constructor(private prisma: PrismaService) {}
 
-  async getCampaigns() {
+  async findAll() {
     try {
       const raw = await this.prisma.campaign.findMany({
         where: { deleted_at: null },
@@ -69,7 +69,7 @@ export class CampaignsService {
     }
   }
 
-  async getCampaignById(campaignId: number) {
+  async findOne(campaignId: number) {
     try {
       return {
         error: false,
