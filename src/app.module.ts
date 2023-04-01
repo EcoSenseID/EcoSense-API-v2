@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { CampaignsModule } from './campaigns/campaigns.module';
 import { NewsModule } from './news/news.module';
 import { RewardsModule } from './rewards/rewards.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RewardsModule } from './rewards/rewards.module';
     CampaignsModule,
     NewsModule,
     RewardsModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [],
