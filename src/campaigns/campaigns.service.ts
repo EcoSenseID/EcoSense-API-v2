@@ -70,6 +70,73 @@ export class CampaignsService {
     }
   }
 
+  async findMyCampaigns(userId: number) {
+    try {
+      return {
+        error: false,
+        message: 'Campaigns fetched successfully',
+        timestamp: new Date(),
+        campaigns: await this.prisma.campaign
+          .findMany({
+            where: { id_initiator: userId },
+            include: {
+              category: true,
+              initiator: true,
+              missions: { include: { completed_missions: true } },
+              join_records: { include: { user: true } },
+              _count: { select: { join_records: true } },
+            },
+          })
+          .then((cs) =>
+            cs.map((c) => ({
+              id: c.id,
+              posterUrl: c.poster_url,
+              title: c.title,
+              description: c.description,
+              startDate: c.start_date,
+              endDate: c.end_date,
+              ecopoints: c.ecopoints,
+              resetEvery: c.reset_every,
+              tasks: c.missions.map((m) => ({
+                id: m.id,
+                name: m.name,
+                order: m.order_number,
+                requireProof: m.require_proof,
+              })),
+              category: {
+                id: c.id_category,
+                name: c.category.name,
+                colorHex: c.category.color_hex,
+              },
+              participantCount: c._count.join_records,
+              isTrending:
+                getTimeStatus(c.start_date, c.end_date) === 'past'
+                  ? false
+                  : checkIsTrending(c._count.join_records),
+              isNew:
+                getTimeStatus(c.start_date, c.end_date) === 'past'
+                  ? false
+                  : checkIsNew(c.start_date),
+              canEditTask: !c.missions.some(
+                (m) => m.completed_missions.length > 0,
+              ),
+              termsConditions: c.terms_conditions
+                ? c.terms_conditions.split('\\n')
+                : [],
+            })),
+          ),
+      };
+    } catch (err) {
+      throw new HttpException(
+        {
+          error: true,
+          message: err.message || 'Error fetching campaigns',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   async findOne(campaignId: number) {
     try {
       return {

@@ -18,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { FirebaseGuard, RolesGuard } from 'src/auth/guard';
-import { Roles } from 'src/auth/decorator';
+import { GetUser, Roles } from 'src/auth/decorator';
 import { Role } from 'src/auth/role.enum';
 
 @ApiTags('Campaigns')
@@ -36,19 +36,21 @@ export class CampaignsController {
     return this.campaignsService.findAll();
   }
 
+  @Get('my')
+  @Roles(Role.Admin)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all campaigns made by the user' })
+  @ApiOkResponse({ description: 'Campaigns fetched successfully' })
+  findMy(@GetUser('id') userId: number) {
+    return this.campaignsService.findMyCampaigns(userId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get campaign details based on ID' })
   @ApiOkResponse({ description: 'Campaign details fetched successfully' })
   findOne(@Param('id', ParseIntPipe) campaignId: number) {
     return this.campaignsService.findOne(campaignId);
-  }
-
-  @Get('my')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all campaigns made by the user' })
-  @ApiOkResponse({ description: 'Campaigns fetched successfully' })
-  findMy() {
-    return 'This action returns all campaigns made by the user';
   }
 
   @Post('')
