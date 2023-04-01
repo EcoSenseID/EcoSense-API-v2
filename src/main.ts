@@ -13,6 +13,7 @@ async function bootstrap() {
       'Everything you need to know when using EcoSense RESTful API.',
     )
     .setVersion('2.0')
+    .setContact('EcoSense Indonesia', 'https://ecosense.id', 'hey@ecosense.id')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, options);
