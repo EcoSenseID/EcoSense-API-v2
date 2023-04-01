@@ -1,7 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { INFO } from './helpers';
 
+@ApiTags('Home')
 @Controller('')
 export class AppController {
   @Get()
