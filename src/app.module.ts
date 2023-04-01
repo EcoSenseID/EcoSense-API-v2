@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { CampaignsModule } from './campaigns/campaigns.module';
 import { NewsModule } from './news/news.module';
+import { RewardsModule } from './rewards/rewards.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { NewsModule } from './news/news.module';
     PrismaModule,
     CampaignsModule,
     NewsModule,
+    RewardsModule,
   ],
   controllers: [AppController],
   providers: [],
