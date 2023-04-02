@@ -8,6 +8,7 @@ import { RewardsModule } from './rewards/rewards.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FirebaseStrategy } from './auth/strategy';
 import { RewardCategoriesModule } from './reward-categories/reward-categories.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RewardCategoriesModule } from './reward-categories/reward-categories.mo
     RewardsModule,
     CategoriesModule,
     RewardCategoriesModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [FirebaseStrategy],
