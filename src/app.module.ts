@@ -9,6 +9,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { FirebaseStrategy } from './auth/strategy';
 import { RewardCategoriesModule } from './reward-categories/reward-categories.module';
 import { StorageModule } from './storage/storage.module';
+import { SecretModule } from './secret/secret.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { StorageModule } from './storage/storage.module';
     CategoriesModule,
     RewardCategoriesModule,
     StorageModule,
+    SecretModule,
   ],
   controllers: [AppController],
   providers: [FirebaseStrategy],

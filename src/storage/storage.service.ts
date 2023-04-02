@@ -1,17 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
-import { getSecret } from 'src/helpers';
+import { SecretService } from 'src/secret/secret.service';
 
 @Injectable()
 export class StorageService {
   private storage: Storage;
 
-  constructor() {
+  constructor(private secretManager: SecretService) {
     this.storageInit();
   }
 
   private async storageInit() {
-    const sec = await getSecret('ecosense-bangkit-gcs', '2');
+    const sec = await this.secretManager.getStorageSecret();
     const result: any = await JSON.parse(sec);
     const storage = new Storage({
       projectId: 'ecosense-bangkit',

@@ -2,18 +2,18 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-firebase-jwt';
 import * as firebase from 'firebase-admin';
-import { getSecret } from 'src/helpers';
+import { SecretService } from 'src/secret/secret.service';
 
 @Injectable()
 export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase') {
   private app: firebase.app.App;
-  constructor() {
+  constructor(private secretManager: SecretService) {
     super({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken() });
     this.init();
   }
 
   async init() {
-    const sec = await getSecret('ecosense-bangkit-firebase-adminsdk', '2');
+    const sec = await this.secretManager.getFirebaseSecret();
     const result: any = await JSON.parse(sec);
     const serviceAccount = {
       type: result.type,
