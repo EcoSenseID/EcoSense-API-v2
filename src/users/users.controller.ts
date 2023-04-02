@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorator';
 import { FirebaseGuard, RolesGuard } from 'src/auth/guard';
 import { Role } from 'src/auth/role.enum';
@@ -12,6 +12,7 @@ export class UsersController {
   @Get('all')
   @Roles(Role.SuperAdmin)
   @UseGuards(FirebaseGuard, RolesGuard)
+  @ApiBearerAuth()
   findAll() {
     return this.userService.getAllUsers();
   }
