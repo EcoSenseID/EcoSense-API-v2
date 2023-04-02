@@ -32,7 +32,7 @@ export class CreateCampaignDto {
   ecopoints: number;
 
   @IsArray()
-  tasks: Mission[];
+  tasks: MissionDto[];
 
   @IsString()
   @IsNotEmpty()
@@ -43,7 +43,7 @@ export class CreateCampaignDto {
   resetEvery: number;
 }
 
-class Mission {
+class MissionDto {
   @IsNumber()
   order: number;
 
