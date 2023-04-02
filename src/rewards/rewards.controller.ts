@@ -8,12 +8,16 @@ import {
   Post,
   Put,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RewardsService } from './rewards.service';
 import { CreateRewardDto, EditRewardDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Roles } from 'src/auth/decorator';
+import { FirebaseGuard, RolesGuard } from 'src/auth/guard';
+import { Role } from 'src/auth/role.enum';
 
 @ApiTags('Rewards')
 @Controller('')
@@ -33,6 +37,8 @@ export class RewardsController {
   }
 
   @Get('rewards/all')
+  @Roles(Role.SuperAdmin)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all rewards' })
   findAll() {
@@ -40,6 +46,8 @@ export class RewardsController {
   }
 
   @Post('rewards')
+  @Roles(Role.SuperAdmin)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @UseInterceptors(FileInterceptor('uploadPoster'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a reward' })
@@ -51,6 +59,8 @@ export class RewardsController {
   }
 
   @Put('rewards/:id')
+  @Roles(Role.SuperAdmin)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @UseInterceptors(FileInterceptor('uploadPoster'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a reward' })
@@ -64,6 +74,8 @@ export class RewardsController {
   }
 
   @Delete('rewards/:id')
+  @Roles(Role.SuperAdmin)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a reward' })
   delete(@Param('id', ParseIntPipe) rewardId: number) {
