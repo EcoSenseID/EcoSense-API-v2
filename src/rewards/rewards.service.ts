@@ -3,6 +3,7 @@ import { convertToUnixTimestamp } from 'src/helpers';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateRewardDto, EditRewardDto } from './dto';
 import { StorageService } from 'src/storage/storage.service';
+import { CLAIM_STATUS } from './claims.enum';
 
 @Injectable()
 export class RewardsService {
@@ -218,6 +219,28 @@ export class RewardsService {
     } catch (err) {
       throw new HttpException(
         { error: true, message: err.message || 'Delete reward failed!' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async validateClaim(validatorId: number, claimId: number) {
+    try {
+      await this.prisma.rewardClaim.update({
+        where: { id: claimId },
+        data: { status: CLAIM_STATUS.completed },
+      });
+      // Send notification to user
+      return {
+        error: false,
+        message: 'Validate reward claim success!',
+      };
+    } catch (err) {
+      throw new HttpException(
+        {
+          error: true,
+          message: err.message || 'Validate reward claim failed!',
+        },
         HttpStatus.BAD_REQUEST,
       );
     }

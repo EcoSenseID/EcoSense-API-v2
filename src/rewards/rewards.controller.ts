@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RewardsService } from './rewards.service';
 import { CreateRewardDto, EditRewardDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Roles } from 'src/auth/decorator';
+import { GetUser, Roles } from 'src/auth/decorator';
 import { FirebaseGuard, RolesGuard } from 'src/auth/guard';
 import { Role } from 'src/auth/role.enum';
 
@@ -80,5 +80,17 @@ export class RewardsController {
   @ApiOperation({ summary: 'Delete a reward' })
   delete(@Param('id', ParseIntPipe) rewardId: number) {
     return this.rewardsService.delete(rewardId);
+  }
+
+  @Put('validateClaim')
+  @Roles(Role.SuperAdmin)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Validate a reward claim' })
+  validateClaim(
+    @GetUser('id', ParseIntPipe) validatorId: number,
+    @Param('id', ParseIntPipe) claimId: number,
+  ) {
+    return this.rewardsService.validateClaim(validatorId, claimId);
   }
 }
