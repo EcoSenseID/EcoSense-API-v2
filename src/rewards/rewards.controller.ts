@@ -7,10 +7,13 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RewardsService } from './rewards.service';
 import { CreateRewardDto, EditRewardDto } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Rewards')
 @Controller('')
@@ -37,20 +40,27 @@ export class RewardsController {
   }
 
   @Post('rewards')
+  @UseInterceptors(FileInterceptor('uploadPoster'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a reward' })
-  create(@Body() dto: CreateRewardDto) {
-    return this.rewardsService.create(dto);
+  create(
+    @Body() dto: CreateRewardDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.rewardsService.create(dto, file);
   }
 
   @Put('rewards/:id')
+  @UseInterceptors(FileInterceptor('uploadPoster'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a reward' })
   update(
     @Param('id', ParseIntPipe) rewardId: number,
     @Body() dto: EditRewardDto,
+    @Body() posterChanged: boolean,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.rewardsService.update(rewardId, dto);
+    return this.rewardsService.update(rewardId, dto, posterChanged, file);
   }
 
   @Delete('rewards/:id')

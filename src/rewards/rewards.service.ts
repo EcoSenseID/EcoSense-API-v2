@@ -2,10 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { convertToUnixTimestamp } from 'src/helpers';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateRewardDto, EditRewardDto } from './dto';
+import { StorageService } from 'src/storage/storage.service';
 
 @Injectable()
 export class RewardsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private storage: StorageService) {}
 
   async findAllDonations() {
     try {
@@ -115,10 +116,17 @@ export class RewardsService {
     }
   }
 
-  async create(dto: CreateRewardDto) {
+  async create(dto: CreateRewardDto, file: Express.Multer.File) {
     try {
       // Store poster image to Google Cloud Storage
-      const photo_url = '';
+      const { error, gcsUrl: photo_url } =
+        await this.storage.uploadRewardPoster(file);
+      if (error) {
+        throw new HttpException(
+          'Upload poster failed.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
       // Store data to database
       await this.prisma.reward.create({
@@ -147,12 +155,37 @@ export class RewardsService {
     }
   }
 
-  async update(id: number, dto: EditRewardDto) {
+  async update(
+    id: number,
+    dto: EditRewardDto,
+    posterChanged: boolean,
+    file?: Express.Multer.File,
+  ) {
+    if (posterChanged && !file) {
+      throw new HttpException(
+        { error: true, message: 'Poster not detected!' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     try {
+      let posterGCSURL = dto.photoUrl;
+      if (posterChanged) {
+        // Store poster image to Google Cloud Storage
+        const { error, gcsUrl } = await this.storage.uploadRewardPoster(file);
+        if (error) {
+          throw new HttpException(
+            'Upload poster failed.',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        posterGCSURL = gcsUrl;
+      }
+      // Store data to database
       await this.prisma.reward.update({
         where: { id },
         data: {
           ...dto,
+          photo_url: posterGCSURL,
           valid_until: dto.validUntil,
           terms_and_conditions: dto.termsConditions.join('\\n'),
           how_to_use: dto.howToUse.join('\\n'),
