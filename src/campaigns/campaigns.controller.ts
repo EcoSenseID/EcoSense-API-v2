@@ -16,7 +16,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateCampaignDto } from './dto/create-campaign.dto';
+import { CreateCampaignDto } from './dto';
 import { FirebaseGuard, RolesGuard } from 'src/auth/guard';
 import { GetUser, Roles } from 'src/auth/decorator';
 import { Role } from 'src/auth/role.enum';
@@ -67,7 +67,7 @@ export class CampaignsController {
   @UseGuards(FirebaseGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a campaign' })
-  update(@Param('id') id: string) {
+  update(@Param('id', ParseIntPipe) id: number) {
     return `This action updates a #${id} campaign`;
   }
 
@@ -76,7 +76,7 @@ export class CampaignsController {
   @UseGuards(FirebaseGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a campaign' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseIntPipe) id: number) {
     return `This action deletes a #${id} campaign`;
   }
 }

@@ -7,7 +7,7 @@ import {
 } from 'src/helpers';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCampaignDto } from './dto/create-campaign.dto';
+import { CreateCampaignDto } from './dto';
 
 @Injectable()
 export class CampaignsService {
