@@ -4,10 +4,19 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateRewardDto, EditRewardDto } from './dto';
 import { StorageService } from 'src/storage/storage.service';
 import { CLAIM_STATUS } from './claims.enum';
+import { NotificationService } from 'src/notification/notification.service';
+import {
+  NotificationObject,
+  NotificationType,
+} from 'src/notification/notification.enum';
 
 @Injectable()
 export class RewardsService {
-  constructor(private prisma: PrismaService, private storage: StorageService) {}
+  constructor(
+    private prisma: PrismaService,
+    private storage: StorageService,
+    private notification: NotificationService,
+  ) {}
 
   async findAllDonations() {
     try {
@@ -226,11 +235,18 @@ export class RewardsService {
 
   async validateClaim(validatorId: number, claimId: number) {
     try {
-      await this.prisma.rewardClaim.update({
+      const { id_user, id_reward } = await this.prisma.rewardClaim.update({
         where: { id: claimId },
         data: { status: CLAIM_STATUS.completed },
       });
       // Send notification to user
+      this.notification.send(
+        id_user,
+        validatorId,
+        NotificationType.REWARD_SENT,
+        NotificationObject.REWARD,
+        id_reward,
+      );
       return {
         error: false,
         message: 'Validate reward claim success!',

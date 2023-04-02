@@ -12,6 +12,7 @@ import { StorageModule } from './storage/storage.module';
 import { SecretModule } from './secret/secret.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthModule } from './auth/auth.module';
     SecretModule,
     UsersModule,
     AuthModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [FirebaseStrategy],
