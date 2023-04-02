@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { convertToUnixTimestamp } from 'src/helpers';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateRewardDto, EditRewardDto } from './dto';
 
 @Injectable()
 export class RewardsService {
@@ -50,37 +51,142 @@ export class RewardsService {
               category: true,
             },
           })
-          .then((reward) => ({
-            id: reward.id,
-            photoUrl: reward.photo_url,
-            title: reward.title,
-            partner: reward.partner,
-            description: reward.description,
-            ecopoints: reward.ecopoints,
-            validUntil: convertToUnixTimestamp(reward.valid_until),
-            termsConditions: reward.terms_and_conditions.split('\\n'),
-            category: {
-              id: reward.id_category,
-              name: reward.category.name,
-            },
-            howToUse: reward.how_to_use.split('\\n'),
-            maxRedeem: reward.max_redeem,
-            redeemedCount: reward.claims.filter((c) => c.status === 1).length,
-            requestedCount: reward.claims.filter((c) => c.status === 2).length,
-            completedCount: reward.claims.filter((c) => c.status === 3).length,
-            donators:
-              reward.claims?.map((c) => c.users.profile_url || '') || [],
+          .then((r) => ({
+            id: r.id,
+            photoUrl: r.photo_url,
+            title: r.title,
+            partner: r.partner,
+            description: r.description,
+            ecopoints: r.ecopoints,
+            validUntil: convertToUnixTimestamp(r.valid_until),
+            termsConditions: r.terms_and_conditions.split('\\n'),
+            category: { id: r.id_category, name: r.category.name },
+            howToUse: r.how_to_use.split('\\n'),
+            maxRedeem: r.max_redeem,
+            redeemedCount: r.claims.filter((c) => c.status === 1).length,
+            requestedCount: r.claims.filter((c) => c.status === 2).length,
+            completedCount: r.claims.filter((c) => c.status === 3).length,
+            donators: r.claims?.map((c) => c.users.profile_url || '') || [],
           }))),
       };
     } catch (err) {
-      return {
-        error: true,
-        message: err.message || 'Fetch rewards failed!',
-      };
+      throw new HttpException(
+        { error: true, message: err.message || 'Fetch rewards failed!' },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
   findAll() {
-    return 'This action returns all rewards';
+    try {
+      return {
+        error: false,
+        message: 'Fetch rewards success!',
+        rewards: this.prisma.reward
+          .findMany({
+            where: { deleted_at: null },
+            include: { category: true, claims: true },
+            orderBy: { id: 'asc' },
+          })
+          .then((rewards) =>
+            rewards.map((r) => ({
+              id: r.id,
+              photoUrl: r.photo_url,
+              title: r.title,
+              partner: r.partner,
+              description: r.description,
+              ecopoints: r.ecopoints,
+              validUntil: r.valid_until,
+              termsConditions: r.terms_and_conditions.split('\\n'),
+              category: { id: r.id_category, name: r.category.name },
+              howToUse: r.how_to_use.split('\\n'),
+              maxRedeem: r.max_redeem,
+              redeemedCount: r.claims.filter((c) => c.status === 1).length,
+              requestedCount: r.claims.filter((c) => c.status === 2).length,
+              completedCount: r.claims.filter((c) => c.status === 3).length,
+            })),
+          ),
+      };
+    } catch (err) {
+      throw new HttpException(
+        { error: true, message: err.message || 'Fetch rewards failed!' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async create(dto: CreateRewardDto) {
+    try {
+      // Store poster image to Google Cloud Storage
+      const photo_url = '';
+
+      // Store data to database
+      await this.prisma.reward.create({
+        data: {
+          ...dto,
+          photo_url,
+          valid_until: dto.validUntil,
+          terms_and_conditions: dto.termsConditions.join('\\n'),
+          how_to_use: dto.howToUse.join('\\n'),
+          max_redeem: dto.maxRedeem,
+          category: { connect: { id: dto.categoryId } },
+        },
+      });
+      return {
+        error: false,
+        message: 'Add new reward success!',
+      };
+    } catch (err) {
+      throw new HttpException(
+        {
+          error: true,
+          message: err.message || 'Add reward failed!',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async update(id: number, dto: EditRewardDto) {
+    try {
+      await this.prisma.reward.update({
+        where: { id },
+        data: {
+          ...dto,
+          valid_until: dto.validUntil,
+          terms_and_conditions: dto.termsConditions.join('\\n'),
+          how_to_use: dto.howToUse.join('\\n'),
+          max_redeem: dto.maxRedeem,
+          category: { connect: { id: dto.category.id } },
+        },
+      });
+      return {
+        error: false,
+        message: 'Edit reward success!',
+      };
+    } catch (err) {
+      throw new HttpException(
+        { error: true, message: err.message || 'Edit reward failed!' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async delete(id: number) {
+    try {
+      await this.prisma.reward.update({
+        where: { id },
+        data: { deleted_at: new Date() },
+      });
+      return {
+        error: false,
+        message: 'Delete reward success!',
+      };
+    } catch (err) {
+      throw new HttpException(
+        { error: true, message: err.message || 'Delete reward failed!' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

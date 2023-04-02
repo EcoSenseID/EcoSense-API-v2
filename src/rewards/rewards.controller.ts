@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RewardsService } from './rewards.service';
+import { CreateRewardDto, EditRewardDto } from './dto';
 
 @ApiTags('Rewards')
 @Controller('')
@@ -37,21 +39,24 @@ export class RewardsController {
   @Post('rewards')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a reward' })
-  create() {
-    return 'This create a new reward';
+  create(@Body() dto: CreateRewardDto) {
+    return this.rewardsService.create(dto);
   }
 
   @Put('rewards/:id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a reward' })
-  update(@Param('id', ParseIntPipe) rewardId: number) {
-    return 'This update reward with id: ' + rewardId;
+  update(
+    @Param('id', ParseIntPipe) rewardId: number,
+    @Body() dto: EditRewardDto,
+  ) {
+    return this.rewardsService.update(rewardId, dto);
   }
 
   @Delete('rewards/:id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a reward' })
   delete(@Param('id', ParseIntPipe) rewardId: number) {
-    return 'This delete reward with id: ' + rewardId;
+    return this.rewardsService.delete(rewardId);
   }
 }
