@@ -3,16 +3,17 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-firebase-jwt';
 import * as firebase from 'firebase-admin';
 import { SecretService } from 'src/secret/secret.service';
+import { TEST_USER } from 'test/mocks/mock-user';
 
 @Injectable()
 export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase') {
   private app: firebase.app.App;
   constructor(private secretManager: SecretService) {
     super({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken() });
-    this.init();
+    if (process.env.NODE_ENV !== 'test') this.init();
   }
 
-  async init() {
+  private async init() {
     const sec = await this.secretManager.getFirebaseSecret();
     const result: any = await JSON.parse(sec);
     const serviceAccount = {
@@ -34,6 +35,10 @@ export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase') {
   }
 
   async validate(token: string) {
+    if (process.env.NODE_ENV === 'test') {
+      // TODO: Return mock user based on requested role.
+      return TEST_USER;
+    }
     const firebaseUser = await this.app
       .auth()
       .verifyIdToken(token, true)
