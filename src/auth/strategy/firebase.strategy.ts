@@ -35,19 +35,18 @@ export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase') {
   }
 
   async validate(token: string) {
-    if (process.env.NODE_ENV !== 'test') {
-      const firebaseUser = await this.app
-        .auth()
-        .verifyIdToken(token, true)
-        .catch((err: any) => {
-          console.log(err);
-          throw new UnauthorizedException(err.message);
-        });
-      if (!firebaseUser) throw new UnauthorizedException();
-      return firebaseUser;
-    } else {
+    if (process.env.NODE_ENV === 'test') {
       // TODO: Return mock user based on requested role.
       return TEST_USER;
     }
+    const firebaseUser = await this.app
+      .auth()
+      .verifyIdToken(token, true)
+      .catch((err: any) => {
+        console.log(err);
+        throw new UnauthorizedException(err.message);
+      });
+    if (!firebaseUser) throw new UnauthorizedException();
+    return firebaseUser;
   }
 }
