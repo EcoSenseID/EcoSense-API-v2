@@ -7,7 +7,7 @@ export class StorageService {
   private storage: Storage;
 
   constructor(private secretManager: SecretService) {
-    this.storageInit();
+    if (process.env.NODE_ENV !== 'test') this.storageInit();
   }
 
   private async storageInit() {
