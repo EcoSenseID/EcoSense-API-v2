@@ -3,13 +3,14 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-firebase-jwt';
 import * as firebase from 'firebase-admin';
 import { SecretService } from 'src/secret/secret.service';
+import { TEST_USER } from 'test/mocks/mock-user';
 
 @Injectable()
 export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase') {
   private app: firebase.app.App;
   constructor(private secretManager: SecretService) {
     super({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken() });
-    this.init();
+    if (process.env.NODE_ENV !== 'test') this.init();
   }
 
   async init() {
@@ -34,14 +35,19 @@ export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase') {
   }
 
   async validate(token: string) {
-    const firebaseUser = await this.app
-      .auth()
-      .verifyIdToken(token, true)
-      .catch((err: any) => {
-        console.log(err);
-        throw new UnauthorizedException(err.message);
-      });
-    if (!firebaseUser) throw new UnauthorizedException();
-    return firebaseUser;
+    if (process.env.NODE_ENV !== 'test') {
+      const firebaseUser = await this.app
+        .auth()
+        .verifyIdToken(token, true)
+        .catch((err: any) => {
+          console.log(err);
+          throw new UnauthorizedException(err.message);
+        });
+      if (!firebaseUser) throw new UnauthorizedException();
+      return firebaseUser;
+    } else {
+      // TODO: Return mock user based on requested role.
+      return TEST_USER;
+    }
   }
 }
