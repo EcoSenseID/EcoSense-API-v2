@@ -13,7 +13,7 @@ export class FirebaseStrategy extends PassportStrategy(Strategy, 'firebase') {
     if (process.env.NODE_ENV !== 'test') this.init();
   }
 
-  async init() {
+  private async init() {
     const sec = await this.secretManager.getFirebaseSecret();
     const result: any = await JSON.parse(sec);
     const serviceAccount = {
