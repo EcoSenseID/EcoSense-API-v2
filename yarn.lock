@@ -498,12 +498,12 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-3.0.1.tgz#8d724fb280f47d1ff99953aee0c1669b25238c2e"
   integrity sha512-z1CjRjtQyBOYL+5Qr9DdYIfrdLBe746jRTYfaYU6MeXkqp7UfYs/jX16lFFVzZ7PGEJvqZNqYUEtb1mvDww4pA==
 
-"@google-cloud/secret-manager@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/secret-manager/-/secret-manager-4.2.1.tgz#c2f04af967e4c70612077816bd4d3af5f85c6edf"
-  integrity sha512-PU7unr+L0Zx2ZErUzyfZ6VxgNQ2t1YfxSWZ1ELaObpRvoeLzsxQaeXH5dsNt0p5XEFu/tTyjDUfyF/64RxbFyQ==
+"@google-cloud/secret-manager@^4.2.2":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@google-cloud/secret-manager/-/secret-manager-4.2.2.tgz#4c0e7a169e91d3f6f27d31252e9065c85d8fe802"
+  integrity sha512-76yXN21ahrZMJKjs+gNoVWrSmioxqF2A2jKyDxRRq0DjSfoLHXb8POipjsTMErc1R1S7J7LToK2iLsi8lJyZqw==
   dependencies:
-    google-gax "^3.5.2"
+    google-gax "^3.5.8"
 
 "@google-cloud/storage@^6.5.2", "@google-cloud/storage@^6.9.5":
   version "6.9.5"
@@ -3096,7 +3096,7 @@ google-auth-library@^8.0.1, google-auth-library@^8.0.2:
     jws "^4.0.0"
     lru-cache "^6.0.0"
 
-google-gax@^3.5.2, google-gax@^3.5.7:
+google-gax@^3.5.7, google-gax@^3.5.8:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-3.6.0.tgz#0f4ae350159737fe0aa289815c0d92838b19f6af"
   integrity sha512-2fyb61vWxUonHiArRNJQmE4tx5oY1ni8VPo08fzII409vDSCWG7apDX4qNOQ2GXXT82gLBn3d3P1Dydh7pWjyw==
