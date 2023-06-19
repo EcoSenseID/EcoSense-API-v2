@@ -27,7 +27,7 @@
   "dependencies": {
     "@google-cloud/secret-manager": "^4.2.2",
     "@google-cloud/storage": "^6.11.0",
-    "@nestjs/common": "^10.0.0",
+    "@nestjs/common": "^10.0.1",
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/passport": "^10.0.0",
