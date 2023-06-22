@@ -850,10 +850,10 @@
     webpack "5.87.0"
     webpack-node-externals "3.0.0"
 
-"@nestjs/common@^10.0.2":
-  version "10.0.2"
-  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-10.0.2.tgz#8ecafc0c88d51579581f09898474d2431988d5aa"
-  integrity sha512-pws0Xtlt6olOleJiMH1/QxKYjV4eZbNMBvVrBraCmKMnrLG2HcVPlANuyPWOB18sz5s8u5/qCKJxuuP9uNIRqQ==
+"@nestjs/common@^10.0.3":
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-10.0.3.tgz#998b80884b9c9ffd54f7e51105612cf5e47a63dc"
+  integrity sha512-Zv59rDQMuwyja8fvnQelG4AbEe7FEC2ZUXcUwE6Tw0aOHx5CaOBIU426FCYY9o3iqJX3xLCKVJ8NrLPg58xCZg==
   dependencies:
     uid "2.0.2"
     iterare "1.2.1"
