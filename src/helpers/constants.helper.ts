@@ -16,6 +16,6 @@ export const INFO = {
     team: 'EcoSense Indonesia',
     host: 'Universitas Indonesia',
   },
-  version: '2.1.91',
+  version: '2.2.4',
   copyright: '2023 © EcoSense Indonesia. All Rights Reserved.',
 };
