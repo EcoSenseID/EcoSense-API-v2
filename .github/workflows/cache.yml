@@ -1,20 +1,18 @@
-name: End-to-end tests
-on: pull_request
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+name: Cache Node.js Build
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 
 env:
   NODE_VERSION: 18.x
 
 jobs:
-  test:
-    name: Test Application with Node.js 18.x
+  cache:
+    name: Cache with Node.js 18.x
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Get yarn cache directory
@@ -22,7 +20,7 @@ jobs:
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn global cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache@v3
         with:
           path: ${{ steps.yarn-cache-dir.outputs.dir }}
           key: node-cache-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -30,19 +28,10 @@ jobs:
           restore-keys: |
             node-cache-${{ runner.os }}-yarn-
 
-      - name: Use Node.js ${{ env.NODE_VERSION }}
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Build application
-        run: yarn build
-
-      - name: Run tests
-        run: yarn test:e2e
-
-      - name: Run unit tests
-        run: yarn test
