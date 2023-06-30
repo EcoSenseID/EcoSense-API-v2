@@ -5,10 +5,6 @@ updates:
     directory: '/'
     schedule:
       interval: weekly
-    open-pull-requests-limit: 20
-    labels:
-      - actions
-      - dependencies
 
   # Maintain dependencies for yarn
   - package-ecosystem: npm
@@ -16,6 +12,10 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 20
-    labels:
-      - javascript
-      - dependencies
+    groups:
+      nestjs:
+        patterns:
+          - '@nestjs/*'
+      typescript-eslint:
+        patterns:
+          - '@typescript-eslint/*'
