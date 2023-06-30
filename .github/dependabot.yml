@@ -16,6 +16,10 @@ updates:
       nestjs:
         patterns:
           - '@nestjs/*'
+      prisma:
+        patterns:
+          - 'prisma'
+          - '@prisma/*'
       typescript-eslint:
         patterns:
           - '@typescript-eslint/*'
