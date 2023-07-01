@@ -56,8 +56,12 @@ jobs:
           fi
 
       - name: ⬆️ Update Version
+        id: bump
         if: steps.status.outputs.STATUS == '1'
-        run: chmod +x ./scripts/bump-version.sh && ./scripts/bump-version.sh
+        run: |
+          chmod +x ./scripts/bump-version.sh
+          ./scripts/bump-version.sh
+          echo "VERSION=$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
 
       - name: 🚀 Push Changes
         if: steps.status.outputs.STATUS == '1'
@@ -66,14 +70,14 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -b actions/lockfile-maintenance
           git add .
-          git commit -m "chore(deps): lockfile maintenance"
+          git commit -m "chore(deps): v${{ steps.bump.outputs.VERSION }} - lockfile maintenance"
           git push -u origin actions/lockfile-maintenance
 
       - name: 🚀 Create Pull Request
         if: steps.status.outputs.STATUS == '1'
         run: |
           gh pr create -B main -H actions/lockfile-maintenance \
-            -t 'chore(deps): lockfile maintenance' \
+            -t 'chore(deps): v${{ steps.bump.outputs.VERSION }} - lockfile maintenance' \
             -b 'Created by Github Actions. All locks refreshed!' \
             -l 'dependencies' \
             -r 'KenTandrian'
