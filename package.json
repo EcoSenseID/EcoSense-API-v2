@@ -1,8 +1,8 @@
 {
   "name": "ecosense-api-v2",
-  "version": "2.2.8",
-  "description": "",
-  "author": "",
+  "version": "2.2.18",
+  "description": "The new EcoSense API for mobile and web applications.",
+  "author": "Kenrick Tandrian",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
