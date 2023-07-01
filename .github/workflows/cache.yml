@@ -1,7 +1,8 @@
 name: Cache Node.js Build
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    # Every Sunday at 00:30 UTC+7
+    - cron: '30 17 * * 6'
   workflow_dispatch:
 
 env:
@@ -15,11 +16,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Get yarn cache directory
+      - name: Get Yarn Cache Directory
         id: yarn-cache-dir
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache yarn global cache
+      - name: Cache Yarn
         uses: actions/cache@v3
         with:
           path: ${{ steps.yarn-cache-dir.outputs.dir }}
