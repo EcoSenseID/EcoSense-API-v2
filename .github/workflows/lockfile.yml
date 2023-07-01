@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - name: 🛎️ Checkout Repository
         uses: actions/checkout@v3
@@ -63,6 +64,18 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout -b actions/lockfile-maintenance
           git add .
           git commit -m "chore(deps): lockfile maintenance"
-          git push
+          git push -u origin actions/lockfile-maintenance
+
+      - name: 🚀 Create Pull Request
+        if: steps.status.outputs.STATUS == '1'
+        run: |
+          gh pr create -B main -H actions/lockfile-maintenance \
+            -t 'chore(deps): lockfile maintenance' \
+            -b 'Created by Github Actions. All locks refreshed!' \
+            -l 'dependencies' \
+            -r 'KenTandrian'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
