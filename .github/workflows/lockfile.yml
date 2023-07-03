@@ -13,5 +13,5 @@ jobs:
       contents: write
     with:
       package-manager: yarn
-      base-version: 1
+      base-version: 2
     secrets: inherit
