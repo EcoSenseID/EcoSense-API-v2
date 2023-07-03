@@ -8,9 +8,10 @@ on:
 jobs:
   run:
     name: Lockfile
-    uses: KenTandrian/workflows/.github/workflows/lockfile.yml@main
+    uses: KenTandrian/workflows/.github/workflows/lockfile-pr.yml@main
     permissions:
       contents: write
+      pull-requests: write
     with:
       package-manager: yarn
       base-version: 2
