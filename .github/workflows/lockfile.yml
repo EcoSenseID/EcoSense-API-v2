@@ -5,81 +5,13 @@ on:
     - cron: '0 17 * * 6'
   workflow_dispatch:
 
-env:
-  NODE_VERSION: 18.x
-
 jobs:
-  maintenance:
-    name: Lockfile maintenance with Node.js 18.x
-    runs-on: ubuntu-latest
+  run:
+    name: Lockfile
+    uses: KenTandrian/workflows/.github/workflows/lockfile.yml@main
     permissions:
       contents: write
-      pull-requests: write
-    steps:
-      - name: 🛎️ Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
-
-      - name: 📁 Get Yarn Cache Directory
-        id: yarn-cache-dir
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: ☁️ Restore Yarn Cache
-        uses: actions/cache/restore@v3
-        with:
-          path: ${{ steps.yarn-cache-dir.outputs.dir }}
-          key: node-cache-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            node-cache-${{ runner.os }}-yarn-
-
-      - name: ⚙️ Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: 📦 Install Dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: ⬆️ Update Lockfile
-        run: yarn upgrade
-
-      - name: 🔍 Check Lockfile Changes
-        id: status
-        run: |
-          if [ $(git status --porcelain | wc -l) == "0" ]; then
-            echo "No lockfile changes detected, exiting..."
-            echo "STATUS=0" >> $GITHUB_OUTPUT
-          else
-            echo "STATUS=1" >> $GITHUB_OUTPUT
-          fi
-
-      - name: ⬆️ Update Version
-        id: bump
-        if: steps.status.outputs.STATUS == '1'
-        run: |
-          chmod +x ./scripts/bump-version.sh
-          ./scripts/bump-version.sh
-          echo "VERSION=$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
-
-      - name: 🚀 Push Changes
-        if: steps.status.outputs.STATUS == '1'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout -b actions/lockfile-maintenance
-          git add .
-          git commit -m "chore(deps): v${{ steps.bump.outputs.VERSION }} - lockfile maintenance"
-          git push -u origin actions/lockfile-maintenance
-
-      - name: 🚀 Create Pull Request
-        if: steps.status.outputs.STATUS == '1'
-        run: |
-          gh pr create -B main -H actions/lockfile-maintenance \
-            -t 'chore(deps): v${{ steps.bump.outputs.VERSION }} - lockfile maintenance' \
-            -b 'Created by Github Actions. All locks refreshed!' \
-            -l 'dependencies' \
-            -r 'KenTandrian'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      package-manager: yarn
+      base-version: 1
+    secrets: inherit
