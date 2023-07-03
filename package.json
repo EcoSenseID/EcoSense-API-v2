@@ -1,6 +1,6 @@
 {
   "name": "ecosense-api-v2",
-  "version": "2.2.18",
+  "version": "2.2.29",
   "description": "The new EcoSense API for mobile and web applications.",
   "author": "Kenrick Tandrian",
   "private": true,
@@ -49,7 +49,7 @@
     "@types/express": "^4.17.17",
     "@types/jest": "29.5.2",
     "@types/multer": "^1.4.7",
-    "@types/node": "^20.3.2",
+    "@types/node": "^20.3.3",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
