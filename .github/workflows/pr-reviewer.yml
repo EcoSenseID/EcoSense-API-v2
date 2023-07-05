@@ -10,8 +10,3 @@ jobs:
   review-dependabot-pr:
     name: PR Review
     uses: KenTandrian/workflows/.github/workflows/dependabot-reviewer.yml@main
-
-  approve-lockfile-pr:
-    name: PR Approve
-    if: github.event.sender.login == 'github-action[bot]' && contains(github.event.pull_request.title, 'lockfile maintenance')
-    uses: KenTandrian/workflows/.github/workflows/approve-automerge.yml@main
