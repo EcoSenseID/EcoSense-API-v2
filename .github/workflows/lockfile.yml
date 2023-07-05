@@ -15,4 +15,5 @@ jobs:
     with:
       package-manager: yarn
       base-version: 2
-    secrets: inherit
+    secrets:
+      REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
