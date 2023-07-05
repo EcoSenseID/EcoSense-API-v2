@@ -8,7 +8,7 @@ on:
 jobs:
   run:
     name: Lockfile
-    uses: KenTandrian/workflows/.github/workflows/lockfile-pr.yml@main
+    uses: KenTandrian/workflows/.github/workflows/lockfile.yml@main
     permissions:
       contents: write
       pull-requests: write
