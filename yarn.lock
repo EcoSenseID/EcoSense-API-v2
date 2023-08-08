@@ -500,12 +500,12 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-3.0.1.tgz#8d724fb280f47d1ff99953aee0c1669b25238c2e"
   integrity sha512-z1CjRjtQyBOYL+5Qr9DdYIfrdLBe746jRTYfaYU6MeXkqp7UfYs/jX16lFFVzZ7PGEJvqZNqYUEtb1mvDww4pA==
 
-"@google-cloud/secret-manager@^4.2.2":
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@google-cloud/secret-manager/-/secret-manager-4.2.2.tgz#4c0e7a169e91d3f6f27d31252e9065c85d8fe802"
-  integrity sha512-76yXN21ahrZMJKjs+gNoVWrSmioxqF2A2jKyDxRRq0DjSfoLHXb8POipjsTMErc1R1S7J7LToK2iLsi8lJyZqw==
+"@google-cloud/secret-manager@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/secret-manager/-/secret-manager-5.0.0.tgz#31b9954e4dc85f8b3ecdb12dcd6b71d7e1d4550c"
+  integrity sha512-8WFnB+9nTfMUrNO91Y3sIokhhN1Gzj7qqXzO5OshHo2GipbkArEEn1Ugfw0K9I7yYevrrLO4ZaSq+CwOaSeFEw==
   dependencies:
-    google-gax "^3.5.8"
+    google-gax "^4.0.3"
 
 "@google-cloud/storage@^6.9.5":
   version "6.12.0"
@@ -3268,7 +3268,7 @@ google-auth-library@^9.0.0:
     jws "^4.0.0"
     lru-cache "^6.0.0"
 
-google-gax@^3.5.7, google-gax@^3.5.8:
+google-gax@^3.5.7:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-3.6.1.tgz#02c78fc496f5adf86f2ca9145545f4b6575f6118"
   integrity sha512-g/lcUjGcB6DSw2HxgEmCDOrI/CByOwqRvsuUvNalHUK2iPPPlmAIpbMbl62u0YufGMr8zgE3JL7th6dCb1Ry+w==
@@ -3288,6 +3288,23 @@ google-gax@^3.5.7, google-gax@^3.5.8:
     protobufjs "7.2.4"
     protobufjs-cli "1.1.1"
     retry-request "^5.0.0"
+
+google-gax@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-4.0.3.tgz#4a0a69a0edbde2c1dbc9b160549db6e60492786e"
+  integrity sha512-gllHYRhZvpz0LcVN+xtyzBeUa/ZYiLGF4JNBECrvL/LxDkaJc09hHoQ+KzRBI2Ewqgrjj7V3QrOC2pGno5ropw==
+  dependencies:
+    "@grpc/grpc-js" "~1.8.0"
+    "@grpc/proto-loader" "^0.7.0"
+    "@types/long" "^4.0.0"
+    abort-controller "^3.0.0"
+    duplexify "^4.0.0"
+    google-auth-library "^9.0.0"
+    node-fetch "^2.6.1"
+    object-hash "^3.0.0"
+    proto3-json-serializer "^1.1.1"
+    protobufjs "7.2.4"
+    retry-request "^6.0.0"
 
 google-p12-pem@^4.0.0:
   version "4.0.1"
@@ -4960,7 +4977,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-proto3-json-serializer@^1.0.0:
+proto3-json-serializer@^1.0.0, proto3-json-serializer@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/proto3-json-serializer/-/proto3-json-serializer-1.1.1.tgz#1b5703152b6ce811c5cdcc6468032caf53521331"
   integrity sha512-AwAuY4g9nxx0u52DnSMkqqgyLHaW/XaPLtaAo3y/ZCfeaQB/g4YDH4kb8Wc/mWzWvu0YjOznVnfn373MVZZrgw==
