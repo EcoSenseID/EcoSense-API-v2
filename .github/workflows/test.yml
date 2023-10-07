@@ -6,11 +6,11 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: 18.x
+  NODE_VERSION: 20.x
 
 jobs:
   test:
-    name: Test Application with Node.js 18.x
+    name: Test Application with Node.js
     runs-on: ubuntu-latest
 
     steps:
