@@ -21,7 +21,7 @@ jobs:
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Yarn
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.yarn-cache-dir.outputs.dir }}
           key: node-cache-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
