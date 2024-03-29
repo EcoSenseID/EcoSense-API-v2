@@ -40,7 +40,7 @@
     "firebase-admin": "^12.0.0",
     "passport": "^0.7.0",
     "passport-firebase-jwt": "^1.2.1",
-    "reflect-metadata": "0.2.1",
+    "reflect-metadata": "0.2.2",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
