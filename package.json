@@ -1,6 +1,6 @@
 {
   "name": "ecosense-api-v2",
-  "version": "2.5.94",
+  "version": "2.6.1",
   "description": "The new EcoSense API for mobile and web applications.",
   "author": "Kenrick Tandrian",
   "packageManager": "yarn@1.22.19",
