@@ -497,10 +497,10 @@
   dependencies:
     google-gax "^4.0.3"
 
-"@google-cloud/storage@^7.11.0", "@google-cloud/storage@^7.7.0":
-  version "7.11.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-7.11.0.tgz#9dce7e887a7c425d7f09f9713134c286789165f4"
-  integrity sha512-W+OPOCgq7a3aAMANALbJAlEnpMV9fy681JWIm7dYe5W/+nRhq/UvA477TJT5/oPNA5DgiAdMEdiitdoLpZqhJg==
+"@google-cloud/storage@^7.11.1", "@google-cloud/storage@^7.7.0":
+  version "7.11.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-7.11.1.tgz#206b9d9205be032c646207514cf96b8baa5a4e0e"
+  integrity sha512-tibLSvgw7nDohMyIelt26kBpJ59YGWA2Rzep++DFNzEzKaSuCSp56Se9iM13ZlM3j5nLzR21IBkpRN58CmvCIw==
   dependencies:
     "@google-cloud/paginator" "^5.0.0"
     "@google-cloud/projectify" "^4.0.0"
