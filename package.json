@@ -3,7 +3,7 @@
   "version": "2.6.38",
   "description": "The new EcoSense API for mobile and web applications.",
   "author": "Kenrick Tandrian",
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "yarn@1.22.22",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
